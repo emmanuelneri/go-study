@@ -17,14 +17,14 @@ func main() {
 
 	total = addFuncNamed(10, total)
 
-	fmt.Println("O total é: ", total)
+	fmt.Println("Total: ", total)
 }
 
-func addFunc(valor, valorAnterior float32) float32 {
-	return valorAnterior + valor
+func addFunc(newValue, currentValue float32) float32 {
+	return newValue + currentValue
 }
 
-func addFuncNamed(valor, valorAnterior float32) (total float32) {
-	total = valorAnterior + valor
+func addFuncNamed(newValue, currentValue float32) (total float32) {
+	total = newValue + currentValue
 	return
 }
