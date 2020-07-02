@@ -1,36 +1,42 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
 	"time"
 
 	"./structs"
 )
 
-// Item struct
 type Item structs.Item
+type Order structs.Order
 
 func main() {
-	const helloWorld = "Hello World"
+	const startMessage = "App Go started"
 
-	fmt.Println(helloWorld, time.Now().Format("02-01-2006"))
+	fmt.Println(startMessage, time.Now().Format("02-01-2006"))
 	fmt.Println("------------")
 
-	var total float32
+	http.HandleFunc("/orders", handleOrder)
+	http.ListenAndServe(":8080", nil)
+}
 
-	for i := 0; i < 10; i++ {
-		item := Item{"Product", 10}
-		total = add(item.Value, total)
+func handleOrder(responseWriter http.ResponseWriter, request *http.Request) {
+	if request.Method != "POST" {
+		http.Error(responseWriter, "404 not found.", http.StatusNotFound)
+		return
 	}
 
-	fmt.Println("O total é: ", total)
-}
+	var order Order
+	err := json.NewDecoder(request.Body).Decode(&order)
 
-func add(valor, valorAnterior float32) float32 {
-	return valorAnterior + valor
-}
+	if err != nil {
+		log.Panicln("fail to process order ", err)
+		http.Error(responseWriter, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-func addNamed(valor, valorAnterior float32) (total float32) {
-	total = valorAnterior + valor
-	return
+	log.Print("Order received: ", order)
 }

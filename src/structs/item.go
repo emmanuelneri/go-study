@@ -1,6 +1,6 @@
 package structs
 
-// Item struct
+// Order item structure
 type Item struct {
 	Description string
 	Value       float32
