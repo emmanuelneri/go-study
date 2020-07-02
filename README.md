@@ -1,3 +1,5 @@
-#Go Study
+# Go Study
 
-RUN project ``go run src/main.go``
+### modules
+
+- ``app``: Complete Go application 
