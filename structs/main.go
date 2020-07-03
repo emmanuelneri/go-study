@@ -1,11 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 func main() {
 
 	cellphone := Product{"Galaxy", "Galaxy s10", 2999}
 	fmt.Println(cellphone)
+	fmt.Println("Cellphone type:", reflect.TypeOf(cellphone))
 
 	var notebook Product
 	notebook.Name = "Macbook Pro"

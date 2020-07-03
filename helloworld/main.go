@@ -1,7 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 func main() {
-	fmt.Println("Hello World Go")
+	const helloworld = "Hello World"
+	fmt.Println(helloworld)
+
+	var text string = "text"
+	fmt.Println(text)
+
+	var number = 10.5
+	fmt.Println(number)
+	fmt.Println("number type:", reflect.TypeOf(number))
+
 }
