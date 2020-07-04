@@ -3,6 +3,8 @@
 URL=http://localhost:8080/orders
 TOTAL=100
 
+START=$(date +%s)
+
 echo "send starting..."
 for i in $(seq 1 $TOTAL);
 do
@@ -14,3 +16,7 @@ do
 done
 
 echo "${TOTAL} registers sent"
+
+END=$(date +%s)
+DIFF=$(( $END - $START ))
+echo "It took $DIFF seconds"
