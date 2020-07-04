@@ -29,6 +29,10 @@ func handleOrder(responseWriter http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	if request.Body == nil {
+		http.Error(responseWriter, "body required.", http.StatusBadRequest)
+	}
+
 	var order Order
 	err := json.NewDecoder(request.Body).Decode(&order)
 
