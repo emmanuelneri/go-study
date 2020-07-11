@@ -5,9 +5,14 @@ import (
 	"reflect"
 )
 
+const (
+	text = "GO const"
+)
+
 func main() {
-	const helloworld = "Hello World"
-	fmt.Println(helloworld)
+	fmt.Println("Hello World")
+
+	fmt.Println(text)
 
 	var text string = "text"
 	fmt.Println(text)
