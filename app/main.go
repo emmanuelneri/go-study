@@ -1,46 +1,43 @@
 package main
 
 import (
-	"encoding/json"
+	"app/handler"
+	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
-	"app/structs"
+	_ "github.com/lib/pq"
 )
 
-type Item structs.Item
-type Order structs.Order
+const (
+	httpport   = ":8080"
+	dbhost     = "localhost"
+	dbport     = 5432
+	dbuser     = "postgres"
+	dbpassword = "postgres"
+	dbname     = "goapp"
+)
 
 func main() {
-	const startMessage = "App Go started"
+	fmt.Println("App Go started", time.Now().Format("02-01-2006"))
 
-	fmt.Println(startMessage, time.Now().Format("02-01-2006"))
-	fmt.Println("------------")
+	db := getDB()
+	orderHandler := &handler.OrderHandler{Db: db}
 
-	http.HandleFunc("/orders", handleOrder)
-	http.ListenAndServe(":8080", nil)
+	http.HandleFunc("/orders", orderHandler.Handle)
+	http.ListenAndServe(httpport, nil)
 }
 
-func handleOrder(responseWriter http.ResponseWriter, request *http.Request) {
-	if request.Method != "POST" {
-		http.Error(responseWriter, "404 not found.", http.StatusNotFound)
-		return
-	}
+func getDB() *sql.DB {
+	dbConfig := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
+		dbuser, dbpassword, dbname)
 
-	if request.Body == nil {
-		http.Error(responseWriter, "body required.", http.StatusBadRequest)
-	}
-
-	var order Order
-	err := json.NewDecoder(request.Body).Decode(&order)
-
+	db, err := sql.Open("postgres", dbConfig)
 	if err != nil {
-		log.Panicln("fail to process order ", err)
-		http.Error(responseWriter, err.Error(), http.StatusBadRequest)
-		return
+		panic(err)
 	}
 
-	log.Print("Order received: ", order)
+	db.SetMaxOpenConns(10)
+	return db
 }

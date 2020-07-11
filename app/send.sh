@@ -5,18 +5,13 @@ TOTAL=100
 
 START=$(date +%s)
 
-echo "send starting..."
+echo "send starting... ${TOTAL} registers"
 for i in $(seq 1 $TOTAL);
 do
   customer="Customer ${i}"
 
   json="{\"customer\": \"${customer}\",\"total\": 100,\"items\": [{\"description\": \"Product 1\", \"value\": 30},{\"description\": \"Product 2\",\"value\": 10},{\"description\": \"Product 3\", \"value\": 60}]}"
 
-  $(curl -s -d "${json}" -H "Content-Type: application/json" -X POST ${URL})
+  response=$(curl -s -d "${json}" -H "Content-Type: application/json" -X POST ${URL})
+  echo $response
 done
-
-echo "${TOTAL} registers sent"
-
-END=$(date +%s)
-DIFF=$(( $END - $START ))
-echo "$DIFF seconds"
