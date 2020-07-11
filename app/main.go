@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"./structs"
+	"app/structs"
 )
 
 type Item structs.Item
