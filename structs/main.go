@@ -3,7 +3,16 @@ package main
 import (
 	"fmt"
 	"reflect"
+
+	"./methods"
 )
+
+// Product representantion
+type Product struct {
+	Name        string
+	Description string
+	Value       float32
+}
 
 func main() {
 
@@ -17,11 +26,13 @@ func main() {
 	notebook.Value = 10000
 
 	fmt.Println(notebook)
-}
 
-// Product representantion
-type Product struct {
-	Name        string
-	Description string
-	Value       float32
+	var productPrice methods.ProductPrice
+	productPrice.Name = "Galaxy s20"
+	productPrice.Description = "Galaxy s20 Ultra"
+	productPrice.CostValue = 4999
+	salesValue := productPrice.CalculateSalesPrice(20)
+
+	fmt.Printf("Product %s cost %.2f", productPrice.Name, salesValue)
+
 }
