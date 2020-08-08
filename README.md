@@ -11,4 +11,5 @@
 
 
 ### examples
-- `complete-app`: Complete Go application 
+- `host-caller`: Host caller mensuration
+- `rest-app`: Rest Go application
