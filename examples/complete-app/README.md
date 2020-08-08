@@ -20,4 +20,4 @@ docker run -it \
 
 #### RUN
 
-RUN project ``go run src/main.go``
+RUN project ``go run main.go``

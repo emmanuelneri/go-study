@@ -8,4 +8,7 @@
 - `structs`: Go structs
 - `OS`: Go OS package
 - `goroutines`: Go routines
-- `app`: Complete Go application 
+
+
+### examples
+- `complete-app`: Complete Go application 
