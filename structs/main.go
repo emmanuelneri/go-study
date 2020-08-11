@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"reflect"
 
-	"./methods"
+	"structs/methods"
 )
 
-// Product representantion
+// Product representation
 type Product struct {
 	Name        string
 	Description string
