@@ -6,9 +6,6 @@ import (
 )
 
 func main() {
-	fmt.Println("App started", time.Now().Format("02-01-2006"))
-	fmt.Println("------------")
-
 	total := getStartValue()
 
 	for i := 0; i < 10; i++ {
@@ -25,6 +22,11 @@ func main() {
 
 	_, onlyName := getProduct()
 	fmt.Println(onlyName)
+}
+
+func init() {
+	fmt.Println("App started", time.Now().Format("02-01-2006"))
+	fmt.Println("------------")
 }
 
 func addFunc(newValue, currentValue float32) float32 {
