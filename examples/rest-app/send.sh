@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 URL=http://localhost:8080/orders
-TOTAL=10000
+TOTAL=1
 
 START=$(date +%s)
 
