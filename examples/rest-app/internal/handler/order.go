@@ -29,7 +29,7 @@ func (h *OrderHandler) Handle(responseWriter http.ResponseWriter, request *http.
 	err := json.NewDecoder(request.Body).Decode(&order)
 
 	if err != nil {
-		log.Fatalf("fail to process order %s", err)
+		log.Printf("fail to process order %s", err)
 		http.Error(responseWriter, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -40,7 +40,7 @@ func (h *OrderHandler) Handle(responseWriter http.ResponseWriter, request *http.
 	err = orderRepository.Save(order)
 
 	if err != nil {
-		log.Fatalf("fail to save order %s", err)
+		log.Printf("fail to save order %s", err)
 		http.Error(responseWriter, err.Error(), http.StatusBadRequest)
 		return
 	}
