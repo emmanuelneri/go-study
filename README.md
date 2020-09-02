@@ -16,3 +16,4 @@
 ### examples
 - `host-caller`: Host caller mensuration
 - `rest-app`: Rest Go application
+- `kafka-app`: Kafka Producer/Consumer application
