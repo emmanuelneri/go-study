@@ -17,8 +17,8 @@ func main() {
 	log.Println("### starting kafka demo ###")
 
 	go consume([]string{nameTopic, colorTopic})
-	go produce(nameTopic, 2)
-	go produce(colorTopic, 2)
+	go produce(nameTopic, 5)
+	go produce(colorTopic, 5)
 
 	select {}
 }
@@ -33,7 +33,7 @@ func produce(topic string, quantity int) {
 		message := &sarama.ProducerMessage{
 			Topic: topic,
 			Key:   sarama.ByteEncoder(strconv.Itoa(i)),
-			Value: sarama.ByteEncoder(topic + ": " + strconv.Itoa(i)),
+			Value: sarama.ByteEncoder(topic + " " + strconv.Itoa(i)),
 		}
 
 		producer.Produce(message)
@@ -46,12 +46,15 @@ func consume(topics []string) {
 		panic(err)
 	}
 
-	go func() {
-		for {
-			msg := consumer.FetchMessage()
-			log.Printf("topic: %s - Message: %s", msg.Topic, string(msg.Value))
-		}
-	}()
+	for _, topic := range topics {
+		t := topic
+		go func() {
+			for {
+				msg := consumer.FetchMessage(t)
+				log.Printf("topic: %s - Message: %s", msg.Topic, string(msg.Value))
+			}
+		}()
+	}
 
 	go consumer.Subscribe(context.Background(), topics)
 }

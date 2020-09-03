@@ -5,13 +5,14 @@ import (
 	"github.com/Shopify/sarama"
 	"kafka_app/config"
 	"log"
+	"time"
 )
 
 const consumerGroupId = "kafka-app"
 
 type Consumer struct {
 	consumerGroup sarama.ConsumerGroup
-	consumedChan  chan *sarama.ConsumerMessage
+	consumedChan  map[string]chan *sarama.ConsumerMessage
 }
 
 func NewConsumer() (*Consumer, error) {
@@ -26,24 +27,35 @@ func NewConsumer() (*Consumer, error) {
 	}
 
 	return &Consumer{consumerGroup: consumer,
-		consumedChan: make(chan *sarama.ConsumerMessage),
+		consumedChan: make(map[string]chan *sarama.ConsumerMessage),
 	}, nil
 }
 
-func (consumer *Consumer) FetchMessage() *sarama.ConsumerMessage {
-	return <-consumer.consumedChan
+func (consumer *Consumer) FetchMessage(topic string) *sarama.ConsumerMessage {
+	for {
+		select {
+		case message := <-consumer.consumedChan[topic]:
+			return message
+		case <-time.After(time.Millisecond):
+		}
+	}
 }
 
 func (consumer *Consumer) Subscribe(ctx context.Context, topics []string) {
 	log.Printf("topic subscribed %s", topics)
 	go logErrors(consumer.consumerGroup.Errors())
 
+	for _, topic := range topics {
+		consumer.consumedChan[topic] = make(chan *sarama.ConsumerMessage)
+	}
+
 	handler := ConsumerHandler{consumedChan: make(chan *sarama.ConsumerMessage)}
 	go consumer.consume(ctx, topics, &handler)
 
 	for {
 		message := <-handler.consumedChan
-		consumer.consumedChan <- message
+		topicChan := consumer.consumedChan[message.Topic]
+		topicChan <- message
 	}
 }
 
