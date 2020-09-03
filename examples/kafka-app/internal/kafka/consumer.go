@@ -25,18 +25,21 @@ func NewConsumer() (*Consumer, error) {
 		return nil, err
 	}
 
-	return &Consumer{consumerGroup: consumer, consumedChan: make(chan *sarama.ConsumerMessage)}, nil
+	return &Consumer{consumerGroup: consumer,
+		consumedChan: make(chan *sarama.ConsumerMessage),
+	}, nil
 }
 
-func (consumer *Consumer) ConsumerMessage() chan *sarama.ConsumerMessage {
-	return consumer.consumedChan
+func (consumer *Consumer) FetchMessage() *sarama.ConsumerMessage {
+	return <-consumer.consumedChan
 }
 
-func (consumer *Consumer) Subscribe(ctx context.Context, topic string) {
+func (consumer *Consumer) Subscribe(ctx context.Context, topics []string) {
+	log.Printf("topic subscribed %s", topics)
 	go logErrors(consumer.consumerGroup.Errors())
 
 	handler := ConsumerHandler{consumedChan: make(chan *sarama.ConsumerMessage)}
-	go consumer.consume(ctx, topic, &handler)
+	go consumer.consume(ctx, topics, &handler)
 
 	for {
 		message := <-handler.consumedChan
@@ -44,15 +47,19 @@ func (consumer *Consumer) Subscribe(ctx context.Context, topic string) {
 	}
 }
 
-func (consumer *Consumer) consume(ctx context.Context, topic string, handler *ConsumerHandler) {
-	err := consumer.consumerGroup.Consume(ctx, []string{topic}, handler)
-	if err != nil {
-		log.Fatalf("[consume groupd error. %v", err)
+func (consumer *Consumer) consume(ctx context.Context, topics []string, handler *ConsumerHandler) {
+	for {
+		err := consumer.consumerGroup.Consume(ctx, topics, handler)
+		if err != nil {
+			log.Fatalf("consume group error. %v", err)
+		}
 	}
 }
 
 func logErrors(errorsChan <-chan error) {
-	log.Printf("Error: %v", <-errorsChan)
+	for err := range errorsChan {
+		log.Printf("Error: %v", err)
+	}
 }
 
 type ConsumerHandler struct {
@@ -70,7 +77,7 @@ func (ch *ConsumerHandler) Cleanup(sarama.ConsumerGroupSession) error {
 }
 
 func (ch *ConsumerHandler) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
-	log.Println("ConsumeClaim")
+	log.Printf("ConsumeClaim: %s", claim.Topic())
 	for message := range claim.Messages() {
 		session.MarkMessage(message, "")
 		ch.consumedChan <- message

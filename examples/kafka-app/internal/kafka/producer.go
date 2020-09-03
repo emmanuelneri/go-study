@@ -32,7 +32,7 @@ func (producer *Producer) Produce(message *sarama.ProducerMessage) {
 func (producer *Producer) logSuccess() {
 	for {
 		produced := <-producer.async.Successes()
-		log.Printf("Produced offset: %d", produced.Offset)
+		log.Printf("Produced topic :%s - offset: %d", produced.Topic, produced.Offset)
 	}
 }
 
