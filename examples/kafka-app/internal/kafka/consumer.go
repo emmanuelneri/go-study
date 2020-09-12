@@ -5,7 +5,6 @@ import (
 	"github.com/Shopify/sarama"
 	"kafka_app/config"
 	"log"
-	"time"
 )
 
 const consumerGroupId = "kafka-app"
@@ -32,16 +31,10 @@ func NewConsumer() (*Consumer, error) {
 }
 
 func (consumer *Consumer) FetchMessage(topic string) *sarama.ConsumerMessage {
-	for {
-		select {
-		case message := <-consumer.consumedChan[topic]:
-			return message
-		case <-time.After(time.Millisecond):
-		}
-	}
+	return <-consumer.consumedChan[topic]
 }
 
-func (consumer *Consumer) Subscribe(ctx context.Context, topics []string) {
+func (consumer *Consumer) Subscribe(ctx context.Context, topics []string, ready chan bool) {
 	log.Printf("topic subscribed %s", topics)
 	go logErrors(consumer.consumerGroup.Errors())
 
@@ -49,9 +42,11 @@ func (consumer *Consumer) Subscribe(ctx context.Context, topics []string) {
 		consumer.consumedChan[topic] = make(chan *sarama.ConsumerMessage)
 	}
 
-	handler := ConsumerHandler{consumedChan: make(chan *sarama.ConsumerMessage)}
-	go consumer.consume(ctx, topics, &handler)
+	handler := newConsumerHandler()
+	go consumer.consume(ctx, topics, handler)
 
+	<-handler.ready
+	ready <- true
 	for {
 		message := <-handler.consumedChan
 		topicChan := consumer.consumedChan[message.Topic]
@@ -75,11 +70,20 @@ func logErrors(errorsChan <-chan error) {
 }
 
 type ConsumerHandler struct {
+	ready        chan bool
 	consumedChan chan *sarama.ConsumerMessage
+}
+
+func newConsumerHandler() *ConsumerHandler {
+	return &ConsumerHandler{
+		consumedChan: make(chan *sarama.ConsumerMessage),
+		ready:        make(chan bool),
+	}
 }
 
 func (ch *ConsumerHandler) Setup(sarama.ConsumerGroupSession) error {
 	log.Println("ConsumerHandler setup")
+	close(ch.ready)
 	return nil
 }
 

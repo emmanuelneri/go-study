@@ -46,6 +46,10 @@ func consume(topics []string) {
 		panic(err)
 	}
 
+	consumerReady := make(chan bool)
+	go consumer.Subscribe(context.Background(), topics, consumerReady)
+	<-consumerReady
+
 	for _, topic := range topics {
 		t := topic
 		go func() {
@@ -55,6 +59,4 @@ func consume(topics []string) {
 			}
 		}()
 	}
-
-	go consumer.Subscribe(context.Background(), topics)
 }
