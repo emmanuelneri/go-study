@@ -20,4 +20,10 @@ docker run -it \
 
 #### RUN
 
-RUN project ``go run main.go``
+RUN project ``go run cmd/main.go``
+
+
+#### Run profile
+
+- Heap `go tool pprof http://localhost:8080/debug/pprof/heap`
+- build project `go tool pprof http://localhost:8080/debug/pprof/profile?seconds=120`
