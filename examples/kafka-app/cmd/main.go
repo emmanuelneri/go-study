@@ -3,9 +3,12 @@ package main
 import (
 	"context"
 	"github.com/Shopify/sarama"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"kafka_app/internal/kafka"
 	"log"
+	"net/http"
 	"strconv"
+	"time"
 )
 
 const (
@@ -17,10 +20,20 @@ func main() {
 	log.Println("### starting kafka demo ###")
 
 	go consume([]string{nameTopic, colorTopic})
-	go produce(nameTopic, 5)
-	go produce(colorTopic, 5)
 
-	select {}
+	ticker := time.NewTicker(3 * time.Second)
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				go produce(nameTopic, 20)
+				go produce(colorTopic, 10)
+			}
+		}
+	}()
+
+	http.Handle("/metrics", promhttp.Handler())
+	log.Panicln(http.ListenAndServe(":8082", nil))
 }
 
 func produce(topic string, quantity int) {
