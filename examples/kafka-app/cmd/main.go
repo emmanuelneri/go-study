@@ -26,8 +26,8 @@ func main() {
 		for {
 			select {
 			case <-ticker.C:
-				go produce(nameTopic, 20)
-				go produce(colorTopic, 10)
+				produce(nameTopic, 20)
+				produce(colorTopic, 10)
 			}
 		}
 	}()

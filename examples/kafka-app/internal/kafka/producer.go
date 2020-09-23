@@ -20,13 +20,15 @@ func NewProducer() (*Producer, error) {
 		return nil, err
 	}
 
-	return &Producer{async: asyncProducer}, nil
+	p := &Producer{async: asyncProducer}
+	go p.logErrors()
+	go p.logSuccess()
+
+	return p, nil
 }
 
 func (producer *Producer) Produce(message *sarama.ProducerMessage) {
 	producer.async.Input() <- message
-	go producer.logErrors()
-	go producer.logSuccess()
 }
 
 func (producer *Producer) logSuccess() {
