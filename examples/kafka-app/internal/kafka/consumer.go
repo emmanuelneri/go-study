@@ -43,7 +43,16 @@ func (consumer *Consumer) Subscribe(ctx context.Context, topics []string, ready 
 	}
 
 	handler := newConsumerHandler()
-	go consumer.consume(ctx, topics, handler)
+	go func() {
+		for {
+			err := consumer.consumerGroup.Consume(ctx, topics, handler)
+			if err != nil {
+				log.Fatalf("consume group error. %v", err)
+			}
+
+			handler.ready = make(chan bool)
+		}
+	}()
 
 	<-handler.ready
 	ready <- true
@@ -51,15 +60,6 @@ func (consumer *Consumer) Subscribe(ctx context.Context, topics []string, ready 
 		message := <-handler.consumedChan
 		topicChan := consumer.consumedChan[message.Topic]
 		topicChan <- message
-	}
-}
-
-func (consumer *Consumer) consume(ctx context.Context, topics []string, handler *ConsumerHandler) {
-	for {
-		err := consumer.consumerGroup.Consume(ctx, topics, handler)
-		if err != nil {
-			log.Fatalf("consume group error. %v", err)
-		}
 	}
 }
 
