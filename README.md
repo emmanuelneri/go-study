@@ -8,6 +8,7 @@
 - `structs`: Go structs
 - `OS`: Go OS package
 - `pointers`: Go pointers
+- `errors`: Go errors
 - `http`: Go http package
 - `interfaces`: Go interfaces
 - `goroutines`: Go routines
