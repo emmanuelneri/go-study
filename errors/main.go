@@ -16,7 +16,7 @@ func main() {
 }
 
 func validate(value string) error {
-	if len(value) == 0 {
+	if value == "" {
 		return errors.New("value can not be empty")
 	}
 
