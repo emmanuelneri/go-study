@@ -1,6 +1,6 @@
 version = 1
 
-exclude_patterns = ["/examples/*"]
+exclude_patterns = ["*/examples/**"]
 
 [[analyzers]]
 name = "go"
