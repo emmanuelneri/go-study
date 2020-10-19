@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"reflect"
-
-	"structs/methods"
 )
 
 // Product representation
@@ -27,7 +25,7 @@ func main() {
 
 	fmt.Println(notebook)
 
-	var productPrice methods.ProductPrice
+	var productPrice ProductPrice
 	productPrice.Name = "Galaxy s20"
 	productPrice.Description = "Galaxy s20 Ultra"
 	productPrice.CostValue = 4999

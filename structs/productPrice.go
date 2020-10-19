@@ -1,4 +1,4 @@
-package methods
+package main
 
 // ProductPrice define product with value
 type ProductPrice struct {
