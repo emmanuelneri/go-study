@@ -12,6 +12,7 @@
 - `http`: Go http package
 - `interfaces`: Go interfaces
 - `goroutines`: Go routines
+- `benchmark`: Go benchmark test
 
 
 ### examples
