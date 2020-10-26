@@ -1,3 +1,7 @@
 package config
 
-var DB = "db"
+type DBKey string
+
+const (
+	DB DBKey = "db"
+)
