@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"kafka_app/internal/kafka"
@@ -20,15 +21,11 @@ func main() {
 	log.Println("### starting kafka demo ###")
 
 	go consume([]string{nameTopic, colorTopic})
-
-	ticker := time.NewTicker(3 * time.Second)
 	go func() {
-		for {
-			select {
-			case <-ticker.C:
-				produce(nameTopic, 20)
-				produce(colorTopic, 10)
-			}
+		for now := range time.Tick(3 * time.Second) {
+			fmt.Printf("start %s", now)
+			produce(nameTopic, 20)
+			produce(colorTopic, 10)
 		}
 	}()
 
