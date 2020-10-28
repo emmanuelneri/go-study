@@ -22,7 +22,7 @@ func NewOrderHandler(ctx context.Context) *OrderHandler {
 
 func (h *OrderHandler) Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	if request.Body == nil {
-		http.Error(responseWriter, "body required.", http.StatusBadRequest)
+		http.Error(responseWriter, errBodyRequired, http.StatusBadRequest)
 	}
 
 	order := &model.Order{}
@@ -36,8 +36,7 @@ func (h *OrderHandler) Handle(responseWriter http.ResponseWriter, request *http.
 
 	defer request.Body.Close()
 	log.Printf("Order received: %v", order)
-	orderRepository := h.Repository
-	err = orderRepository.Save(order)
+	err = h.Repository.Save(order)
 
 	if err != nil {
 		log.Printf("fail to save order %s", err)
