@@ -1,18 +1,17 @@
 package http
 
 import (
+	"app/internal/container"
 	"app/internal/handler"
-	"context"
 	"github.com/gorilla/mux"
 	"net/http"
 )
 
 const PostMethod = "POST"
 
-func configRoutes(ctx context.Context) *mux.Router {
+func configRoutes(container *container.Container) *mux.Router {
 	r := mux.NewRouter()
-
-	orderHandler := handler.NewOrderHandler(ctx)
+	orderHandler := handler.NewOrderHandler(container.OrderService)
 	r.Handle(
 		"/orders",
 		addDefaultMiddlewares(orderHandler.Handle),

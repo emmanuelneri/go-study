@@ -9,6 +9,8 @@ require (
 	github.com/gorilla/mux v1.7.4
 	github.com/lib/pq v1.7.0
 	github.com/pkg/errors v0.9.1
+	github.com/stretchr/testify v1.6.1
 	github.com/testcontainers/testcontainers-go v0.9.0
 	gotest.tools v0.0.0-20181223230014-1083505acf35
+	github.com/golang/mock v1.4.4
 )

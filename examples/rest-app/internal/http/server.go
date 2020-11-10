@@ -1,22 +1,30 @@
 package http
 
 import (
-	"context"
+	"app/internal/container"
 	"fmt"
 	"log"
 	"net/http"
 	_ "net/http/pprof"
 )
 
-const (
-	address = ":8080"
-)
+type HttpServer struct {
+	port      string
+	container *container.Container
+}
 
-func Start(ctx context.Context) {
-	fmt.Println("Starting HTTP Server at " + address)
+func NewHttpServer(port string, container *container.Container) *HttpServer {
+	return &HttpServer{
+		port:      port,
+		container: container,
+	}
+}
 
-	r := configRoutes(ctx)
+func (h HttpServer) Start() {
+	fmt.Println("Starting HTTP Server at " + h.port)
+
+	r := configRoutes(h.container)
 	http.Handle("/", r)
 
-	log.Panicln(http.ListenAndServe(address, nil))
+	log.Panicln(http.ListenAndServe(h.port, nil))
 }

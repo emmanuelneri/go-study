@@ -2,31 +2,34 @@ package main
 
 import (
 	"app/config"
+	"app/internal/container"
 	"app/internal/http"
-	"context"
 )
 
 const (
-	DBHost       = "localhost"
-	DBPort       = "5432"
-	DBUser       = "postgres"
-	DBPassword   = "postgres"
-	DBName       = "goapp"
-	DBDriver     = "postgres"
+	dbHost       = "localhost"
+	dbPort       = "5432"
+	dbUser       = "postgres"
+	dbPassword   = "postgres"
+	dbName       = "goapp"
+	dbDriver     = "postgres"
 	maxOpenConns = 10
+	serverPort   = ":8080"
 )
 
 func main() {
 	db := config.StartDB(config.DBConfig{
-		Host:         DBHost,
-		Port:         DBPort,
-		Name:         DBName,
-		User:         DBUser,
-		Password:     DBPassword,
-		Driver:       DBDriver,
+		Host:         dbHost,
+		Port:         dbPort,
+		Name:         dbName,
+		User:         dbUser,
+		Password:     dbPassword,
+		Driver:       dbDriver,
 		MaxOpenConns: maxOpenConns,
 		MigrationDir: "file://config/migrations",
 	})
-	ctx := context.WithValue(context.Background(), config.DB, db)
-	http.Start(ctx)
+
+	c := container.Start(db)
+
+	http.NewHttpServer(serverPort, c).Start()
 }

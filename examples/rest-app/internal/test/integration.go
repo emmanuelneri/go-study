@@ -3,6 +3,7 @@ package test
 import (
 	"app/config"
 	"context"
+	"database/sql"
 	"github.com/docker/go-connections/nat"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
@@ -14,17 +15,13 @@ const (
 
 type Integration struct {
 	context           context.Context
-	appContext        context.Context
 	postgresContainer testcontainers.Container
 	dbConfig          config.DBConfig
+	db                *sql.DB
 }
 
 func NewIntegration(dbConfig config.DBConfig) *Integration {
 	return &Integration{dbConfig: dbConfig}
-}
-
-func (it Integration) AppContext() context.Context {
-	return it.appContext
 }
 
 func (it *Integration) StartPostgres() error {
@@ -60,12 +57,16 @@ func (it *Integration) Terminate() error {
 	return it.postgresContainer.Terminate(it.context)
 }
 
-func (it *Integration) StartAppContext() error {
+func (it *Integration) StartDB() error {
 	db, err := config.Connect(it.dbConfig)
 	if err != nil {
 		return err
 	}
 
-	it.appContext = context.WithValue(context.Background(), config.DB, db)
+	it.db = db
 	return nil
+}
+
+func (it Integration) DB() *sql.DB {
+	return it.db
 }
