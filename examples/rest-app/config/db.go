@@ -72,5 +72,10 @@ func migration(config DBConfig, db *sql.DB) error {
 		return errors.Wrap(err, "migration start fail")
 	}
 
-	return m.Up()
+	defer m.Close()
+	if err = m.Up(); err != migrate.ErrNoChange {
+		return err
+	}
+
+	return nil
 }
