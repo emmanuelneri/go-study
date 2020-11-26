@@ -11,6 +11,7 @@
 - `errors`: Go errors
 - `http`: Go http package
 - `interfaces`: Go interfaces
+- `channels`: Go Channels
 - `goroutines`: Go routines
 - `benchmark`: Go benchmark test
 
