@@ -4,6 +4,7 @@
 
 - `helloworld`: Go Hello World \o/
 - `arrays`: Go Arrays / Slice
+- `map`: Go Map
 - `functions`: Go functions
 - `structs`: Go structs
 - `OS`: Go OS package
