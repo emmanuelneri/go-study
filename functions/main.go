@@ -1,7 +1,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"log"
 	"time"
 )
 
@@ -22,6 +24,13 @@ func main() {
 
 	_, onlyName := getProduct()
 	fmt.Println(onlyName)
+
+	value, err := addValue(10, 20)
+	if err != nil {
+		log.Printf("ERROR - %s", err.Error())
+	}
+
+	fmt.Println(value)
 }
 
 func init() {
@@ -44,4 +53,11 @@ func getStartValue() float32 {
 
 func getProduct() (string, string) {
 	return "123", "Product"
+}
+
+func addValue(newValue, currentValue float32) (float32, error) {
+	if newValue == 0 {
+		return 0, errors.New("invalid new value")
+	}
+	return newValue + currentValue, nil
 }
