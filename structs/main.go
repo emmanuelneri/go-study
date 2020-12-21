@@ -14,7 +14,7 @@ type Product struct {
 
 func main() {
 
-	cellphone := Product{"Galaxy", "Galaxy s10", 2999}
+	cellphone := Product{"Galaxy", "Galaxy s10", 3000}
 	fmt.Println(cellphone)
 	fmt.Println("Cellphone type:", reflect.TypeOf(cellphone))
 
@@ -32,5 +32,10 @@ func main() {
 	salesValue := productPrice.CalculateSalesPrice(20)
 
 	fmt.Printf("Product %s cost %.2f", productPrice.Name, salesValue)
+
+	order := NewOrder()
+	order.addProduct(notebook, 1)
+	order.addProduct(cellphone, 2)
+	fmt.Print(order)
 
 }
