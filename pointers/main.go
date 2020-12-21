@@ -1,8 +1,23 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 func main() {
+	var p *int //<nil>
+	fmt.Println(p)
+
+	i := 10
+	p = &i
+	i = 20
+	fmt.Println(*p)
+
+	*p = 30
+	fmt.Println(*p)
+
+	recoverInvalidMemoryAddress()
 
 	array := ArrayList{}
 	add(0, "teste", &array)
@@ -11,6 +26,20 @@ func main() {
 	addReferenceAndMethod(3, "teste4", &array)
 
 	fmt.Println(array)
+}
+
+func recoverInvalidMemoryAddress() {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Println("panic recover:", err)
+		}
+	}()
+
+	var p *int
+	var i int
+
+	i = *p
+	fmt.Println(i)
 }
 
 type ArrayList struct {
