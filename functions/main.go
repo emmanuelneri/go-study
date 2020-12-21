@@ -31,6 +31,18 @@ func main() {
 	}
 
 	fmt.Println(value)
+
+	anonymousFunctions()
+}
+
+func anonymousFunctions() {
+	defer func() {
+		fmt.Println("defer anonymousFunctions")
+	}()
+
+	func() {
+		fmt.Println("anonymousFunctions")
+	}()
 }
 
 func init() {
