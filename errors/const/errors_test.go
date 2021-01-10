@@ -52,6 +52,13 @@ func Test_error(t *testing.T) {
 				customError := CustomError{error: "Invalid Param "}
 				return errors.As(args.error, &customError)
 			}, want: false},
+
+		{name: "compare error type type should be true because is same type",
+			args: args{error: InvalidValue},
+			compare: func(args args) bool {
+				_, ok := args.error.(CustomError)
+				return ok
+			}, want: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
