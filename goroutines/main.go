@@ -8,6 +8,18 @@ import (
 
 func main() {
 
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+		fmt.Println("hello")
+		return
+	}()
+	wg.Wait()
+
+	fmt.Println("world")
+
 	goroutineResult()
 	goroutineWaitAll()
 }
